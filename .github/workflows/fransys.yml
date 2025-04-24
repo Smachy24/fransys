@@ -18,10 +18,8 @@ jobs:
         run: docker login -u ${{ secrets.FRANSYS_REGISTRY_MASTER_USERNAME }} -p ${{ secrets.FRANSYS_REGISTRY_MASTER_PASSWORD }} ${{ secrets.FRANSYS_REGISTRY_DOMAIN }}
       - name: Prepare the directory
         run: cp -r /build build
-      - name: Debug dockerfile path
-        run: echo "Dockerfile path: ${{ steps.prepare-vars.outputs.DOCKERFILE_PATH }}"
       - name: Build the Docker image
-        run: docker buildx build --cache-from "$FRANSYS_REGISTRY:${{ github.sha }}" --cache-from "$FRANSYS_REGISTRY:${{ github.ref_name }}" -f ${{ steps.prepare-vars.outputs.DOCKERFILE_PATH }} --tag "$FRANSYS_REGISTRY:${{ github.sha }}" --progress=plain . 2>&1
+        run: docker buildx build --cache-from "$FRANSYS_REGISTRY:${{ github.sha }}" --cache-from "$FRANSYS_REGISTRY:${{ github.ref_name }}" -f ${{ secrets.DOCKERFILE_PATH }} --tag "$FRANSYS_REGISTRY:${{ github.sha }}" --progress=plain . 2>&1
       - name: Push the image
         if: github.ref == 'refs/heads/master'
         run: docker push "$FRANSYS_REGISTRY:${{ github.sha }}"
